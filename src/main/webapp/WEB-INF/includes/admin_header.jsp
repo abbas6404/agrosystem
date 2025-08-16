@@ -41,8 +41,14 @@
                 <a href="${pageContext.request.contextPath}/admin/reports" class="nav-item ${param.activePage == 'reports' ? 'active' : ''}">
                     <i class="fas fa-chart-bar"></i> রিপোর্ট
                 </a>
+                <a href="${pageContext.request.contextPath}/admin_change_password.jsp" class="nav-item ${param.activePage == 'password' ? 'active' : ''}">
+                    <i class="fas fa-key"></i> পাসওয়ার্ড পরিবর্তন
+                </a>
                 <a href="${pageContext.request.contextPath}/admin/settings" class="nav-item ${param.activePage == 'settings' ? 'active' : ''}">
                     <i class="fas fa-cog"></i> সেটিংস
+                </a>
+                <a href="${pageContext.request.contextPath}/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i> লগ আউট
                 </a>
             </nav>
             <div class="sidebar-footer">
@@ -59,8 +65,9 @@
                     <p>স্বাগতম, <%= user.getName() %>! | <%= new java.text.SimpleDateFormat("EEEE, MMMM d, yyyy", new java.util.Locale("bn")).format(new java.util.Date()) %></p>
                 </div>
                 <div class="header-actions">
-                    <a href="${pageContext.request.contextPath}/admin/profile" class="header-btn">
-                        <i class="fas fa-user"></i> প্রোফাইল
+                  
+                    <a href="${pageContext.request.contextPath}/admin_change_password.jsp" class="header-btn">
+                        <i class="fas fa-key"></i> পাসওয়ার্ড পরিবর্তন
                     </a>
                     <a href="${pageContext.request.contextPath}/logout" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> লগ আউট

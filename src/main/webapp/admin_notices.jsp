@@ -7,6 +7,990 @@
     <jsp:param name="activePage" value="notices" />
 </jsp:include>
 
+<style>
+/* CSS Variables */
+:root {
+    --primary-color: #2ecc71;
+    --primary-dark: #27ae60;
+    --secondary-color: #3498db;
+    --accent-color: #f39c12;
+    --danger-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --dark-color: #2c3e50;
+    --bg-light: #f8f9fa;
+    --border-color: #e9ecef;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-hover: 0 8px 15px rgba(0,0,0,0.15);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* Enhanced Notice Management Styling */
+.notice-welcome {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.notice-welcome::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.notice-welcome h1 {
+    margin: 0 0 15px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.notice-welcome p {
+    margin: 0;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* Enhanced Page Actions */
+.page-actions {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.page-actions .btn-primary,
+.page-actions .btn-secondary {
+    padding: 15px 30px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.page-actions .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+}
+
+.page-actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(39, 174, 96, 0.4);
+}
+
+.page-actions .btn-secondary {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
+}
+
+.page-actions .btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(149, 165, 166, 0.4);
+}
+
+/* Enhanced Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(39, 174, 96, 0.4);
+}
+
+.stat-content h4 {
+    margin: 0 0 15px 0;
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.stat-number {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Enhanced Quick Notice Form */
+.quick-notice-form {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.quick-notice-form h3 {
+    margin: 0 0 25px 0;
+    color: var(--dark-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.quick-notice-form h3 i {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.required {
+    color: var(--danger-color);
+    font-weight: 700;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    padding: 15px 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+    transform: translateY(-2px);
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Enhanced Form Actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+    flex-wrap: wrap;
+}
+
+.form-actions .btn-primary,
+.form-actions .btn-secondary {
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.form-actions .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+}
+
+.form-actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(39, 174, 96, 0.4);
+}
+
+.form-actions .btn-secondary {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
+}
+
+.form-actions .btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(149, 165, 166, 0.4);
+}
+
+/* Live Preview Styling */
+.live-preview {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 25px;
+    border: 2px dashed #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.live-preview h4 {
+    margin: 0 0 20px 0;
+    color: var(--dark-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-preview h4 i {
+    color: var(--primary-color);
+}
+
+.preview-content {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f3f4;
+}
+
+.preview-header h3 {
+    margin: 0;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.preview-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+}
+
+.preview-badge.important {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    color: #ef6c00;
+}
+
+.preview-badge.urgent {
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    color: #c62828;
+}
+
+.preview-badge.announcement {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    color: #2e7d32;
+}
+
+.preview-badge.warning {
+    background: linear-gradient(135deg, #fff8e1, #ffecb3);
+    color: #f57f17;
+}
+
+.preview-body {
+    margin-bottom: 15px;
+}
+
+.preview-body p {
+    margin: 0;
+    color: var(--dark-color);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.preview-footer {
+    padding-top: 15px;
+    border-top: 1px solid #f1f3f4;
+}
+
+.preview-footer small {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Enhanced Table Styling */
+.table-container {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.table-container:hover {
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+/* Table Row Selection */
+.styled-table tbody tr.selected {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
+    border-left: 4px solid var(--primary-color);
+}
+
+.styled-table tbody tr.active-row {
+    background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important;
+    border-left: 4px solid var(--accent-color);
+}
+
+/* Enhanced Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.btn-view { 
+    background: linear-gradient(135deg, var(--secondary-color), #2980b9); 
+}
+
+.btn-edit { 
+    background: linear-gradient(135deg, var(--accent-color), #e67e22); 
+}
+
+.btn-delete { 
+    background: linear-gradient(135deg, var(--danger-color), #c0392b); 
+}
+
+/* Enhanced Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    opacity: 0.6;
+}
+
+.empty-state h3 {
+    margin: 0 0 15px 0;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.empty-state small {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* Enhanced Search and Filter */
+.search-filter-form {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    border: 1px solid #e9ecef;
+}
+
+.search-filter-form h3 {
+    margin: 0 0 25px 0;
+    color: var(--dark-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-filter-form h3 i {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.search-input,
+.filter-select {
+    padding: 15px 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    width: 100%;
+}
+
+.search-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Template Cards */
+.templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
+/* Content Area Styling */
+.content-area {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.content-area:hover {
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.content-area h3 {
+    margin: 0 0 25px 0;
+    color: var(--dark-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.content-area h3 i {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.template-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.template-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+.template-header {
+    margin-bottom: 20px;
+}
+
+.template-header i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.template-header h4 {
+    margin: 0;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.template-content {
+    margin-bottom: 25px;
+}
+
+.template-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.template-card .btn-primary {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Enhanced Button Styling */
+.btn-primary,
+.btn-secondary {
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(39, 174, 96, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(149, 165, 166, 0.4);
+}
+
+/* Button Loading States */
+.btn-primary:disabled,
+.btn-secondary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Enhanced Input Styling */
+.input-group input,
+.input-group select,
+.input-group textarea {
+    padding: 15px 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Label Styling */
+.input-group label {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.required {
+    color: var(--danger-color);
+    font-weight: 700;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.styled-table th {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--dark-color);
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.95rem;
+}
+
+.styled-table td {
+    padding: 20px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+}
+
+.styled-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.styled-table tbody tr:hover {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    transform: scale(1.01);
+}
+
+/* Notice Type Badges */
+.notice-type-badge {
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    min-width: 100px;
+}
+
+.notice-type-general {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+}
+
+.notice-type-important {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    color: #ef6c00;
+}
+
+.notice-type-urgent {
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    color: #c62828;
+}
+
+.notice-type-announcement {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    color: #2e7d32;
+}
+
+.notice-type-warning {
+    background: linear-gradient(135deg, #fff8e1, #ffecb3);
+    color: #f57f17;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    min-width: 100px;
+}
+
+.status-active {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    color: #2e7d32;
+}
+
+.status-expired {
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    color: #c62828;
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, #f5f5f5, #eeeeee);
+    color: #616161;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notice-welcome {
+        padding: 30px 20px;
+    }
+    
+    .notice-welcome h1 {
+        font-size: 2rem;
+    }
+    
+    .page-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .page-actions .btn-primary,
+    .page-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .form-actions .btn-primary,
+    .form-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .templates-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .styled-table {
+        min-width: 600px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .action-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Additional Responsive Breakpoints */
+@media (max-width: 480px) {
+    .notice-welcome {
+        padding: 20px 15px;
+    }
+    
+    .notice-welcome h1 {
+        font-size: 1.8rem;
+    }
+    
+    .notice-welcome p {
+        font-size: 1rem;
+    }
+    
+    .content-area,
+    .quick-notice-form,
+    .search-filter-form {
+        padding: 20px;
+    }
+    
+    .form-actions {
+        gap: 10px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animation Enhancements */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Apply animations to key elements */
+.notice-welcome {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.stat-card {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+.quick-notice-form {
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.content-area {
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+/* Hover animations */
+.stat-card:hover .stat-icon {
+    animation: pulse 1s infinite;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+    animation: pulse 0.6s ease-in-out;
+}
+</style>
+
+<!-- Notice Welcome Section -->
+<div class="notice-welcome">
+    <h1><i class="fas fa-bullhorn"></i> নোটিশ ব্যবস্থাপনা</h1>
+    <p>আপনার কৃষকদের জন্য গুরুত্বপূর্ণ নোটিশ এবং ঘোষণা প্রকাশ করুন</p>
+</div>
+
 <div class="notice-management-container">
     <!-- Page Actions -->
     <div class="page-actions">
@@ -15,6 +999,12 @@
         </a>
         <a href="${pageContext.request.contextPath}/admin/notices/templates" class="btn-secondary">
             <i class="fas fa-file-alt"></i> নোটিশ টেমপ্লেট
+        </a>
+        <a href="${pageContext.request.contextPath}/admin/notices/schedule" class="btn-secondary">
+            <i class="fas fa-clock"></i> সময়সূচী
+        </a>
+        <a href="${pageContext.request.contextPath}/admin/notices/analytics" class="btn-secondary">
+            <i class="fas fa-chart-line"></i> বিশ্লেষণ
         </a>
     </div>
 
@@ -59,9 +1049,11 @@
     </div>
 
     <!-- Quick Notice Form -->
-    <div class="content-area">
+    <div class="quick-notice-form">
         <h3><i class="fas fa-plus-circle"></i> দ্রুত নোটিশ প্রকাশ</h3>
-        <form action="${pageContext.request.contextPath}/admin/notices" method="post" class="quick-notice-form">
+        <form action="${pageContext.request.contextPath}/admin/notices" method="post" id="quickNoticeForm" onsubmit="return validateAndSubmitForm(event)">
+
+
             <c:if test="${editNotice != null}">
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" name="noticeId" value="${editNotice.id}">
@@ -73,13 +1065,13 @@
             <div class="form-row">
                 <div class="input-group">
                     <label>শিরোনাম <span class="required">*</span></label>
-                    <input type="text" name="title" required 
+                    <input type="text" name="title" id="noticeTitle" required 
                            placeholder="নোটিশের শিরোনাম লিখুন"
                            value="${editNotice != null ? editNotice.title : ''}">
                 </div>
                 <div class="input-group">
                     <label>ধরন</label>
-                    <select name="noticeType">
+                    <select name="noticeType" id="noticeType">
                         <option value="general" ${editNotice != null && editNotice.type == 'general' ? 'selected' : ''}>সাধারণ</option>
                         <option value="important" ${editNotice != null && editNotice.type == 'important' ? 'selected' : ''}>গুরুত্বপূর্ণ</option>
                         <option value="urgent" ${editNotice != null && editNotice.type == 'urgent' ? 'selected' : ''}>জরুরি</option>
@@ -91,13 +1083,13 @@
             <div class="form-row">
                 <div class="input-group">
                     <label>বিস্তারিত <span class="required">*</span></label>
-                    <textarea name="content" rows="4" required placeholder="নোটিশের বিস্তারিত লিখুন">${editNotice != null ? editNotice.content : ''}</textarea>
+                    <textarea name="content" id="noticeContent" rows="4" required placeholder="নোটিশের বিস্তারিত লিখুন">${editNotice != null ? editNotice.content : ''}</textarea>
                 </div>
             </div>
             <div class="form-row">
                 <div class="input-group">
                     <label>টার্গেট গ্রুপ</label>
-                    <select name="targetGroup">
+                    <select name="targetGroup" id="targetGroup">
                         <option value="all" ${editNotice != null && editNotice.targetGroup == 'all' ? 'selected' : ''}>সব কৃষক</option>
                         <option value="rice" ${editNotice != null && editNotice.targetGroup == 'rice' ? 'selected' : ''}>ধান চাষকারী</option>
                         <option value="wheat" ${editNotice != null && editNotice.targetGroup == 'wheat' ? 'selected' : ''}>গম চাষকারী</option>
@@ -124,18 +1116,20 @@
                         <c:otherwise>নোটিশ প্রকাশ করুন</c:otherwise>
                     </c:choose>
                 </button>
+
+
+
+
+
                 <c:if test="${editNotice != null}">
                     <a href="${pageContext.request.contextPath}/admin/notices" class="btn-secondary">
                         <i class="fas fa-times"></i> বাতিল করুন
                     </a>
                 </c:if>
-                <c:if test="${editNotice == null}">
-                    <button type="button" class="btn-secondary" onclick="clearForm()">
-                        <i class="fas fa-undo"></i> ফর্ম পরিষ্কার করুন
-                    </button>
-                </c:if>
             </div>
         </form>
+        
+
     </div>
 
     <!-- Search and Filter -->
@@ -445,57 +1439,52 @@ function closeNoticeViewModal() {
     document.getElementById('noticeViewModal').style.display = 'none';
 }
 
-function clearForm() {
-    document.querySelector('.quick-notice-form').reset();
+
+
+
+
+// Live Preview Functionality - Disabled to fix JavaScript errors
+function updateLivePreview() {
+    // Function disabled to prevent JavaScript errors
+    return;
 }
 
-function useTemplate(templateType) {
-    const templates = {
-        urgent: {
-            title: 'জরুরি সতর্কতা',
-            content: 'আপনার এলাকায় জরুরি পরিস্থিতি দেখা দিয়েছে। দয়া করে সতর্কতা অবলম্বন করুন।',
-            type: 'urgent',
-            targetGroup: 'all',
-            expiry: '1'
-        },
-        seasonal: {
-            title: 'মৌসুমি কৃষি নির্দেশনা',
-            content: 'বর্তমান মৌসুমে চাষের জন্য গুরুত্বপূর্ণ নির্দেশনা।',
-            type: 'important',
-            targetGroup: 'all',
-            expiry: '7'
-        },
-        educational: {
-            title: 'কৃষি শিক্ষা',
-            content: 'নতুন কৃষি প্রযুক্তি ও পদ্ধতি সম্পর্কে জানুন।',
-            type: 'general',
-            targetGroup: 'all',
-            expiry: '30'
-        },
-        cooperation: {
-            title: 'সরকারি সহায়তা',
-            content: 'কৃষকদের জন্য উপলব্ধ সরকারি সহায়তা ও সুবিধা।',
-            type: 'announcement',
-            targetGroup: 'all',
-            expiry: '30'
-        }
+function getTypeText(type) {
+    const typeMap = {
+        'general': 'সাধারণ',
+        'important': 'গুরুত্বপূর্ণ',
+        'urgent': 'জরুরি',
+        'announcement': 'ঘোষণা',
+        'warning': 'সতর্কতা'
     };
-    
-    const template = templates[templateType];
-    if (template) {
-        document.querySelector('input[name="title"]').value = template.title;
-        document.querySelector('textarea[name="content"]').value = template.content;
-        document.querySelector('select[name="noticeType"]').value = template.type;
-        document.querySelector('select[name="targetGroup"]').value = template.targetGroup;
-        document.querySelector('select[name="expiry"]').value = template.expiry;
-        
-        // Scroll to form
-        document.querySelector('.quick-notice-form').scrollIntoView({ behavior: 'smooth' });
-    }
+    return typeMap[type] || 'সাধারণ';
+}
+
+function getTargetGroupText(targetGroup) {
+    const targetMap = {
+        'all': 'সব কৃষক',
+        'rice': 'ধান চাষকারী',
+        'wheat': 'গম চাষকারী',
+        'vegetables': 'সবজি চাষকারী',
+        'fruits': 'ফল চাষকারী'
+    };
+    return targetMap[targetGroup] || 'সব কৃষক';
 }
 
 // Enhanced search and filter functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize live preview
+    const titleInput = document.getElementById('noticeTitle');
+    const contentInput = document.getElementById('noticeContent');
+    const typeSelect = document.getElementById('noticeType');
+    const targetSelect = document.getElementById('targetGroup');
+    
+    if (titleInput) titleInput.addEventListener('input', updateLivePreview);
+    if (contentInput) contentInput.addEventListener('input', updateLivePreview);
+    if (typeSelect) typeSelect.addEventListener('change', updateLivePreview);
+    if (targetSelect) targetSelect.addEventListener('change', updateLivePreview);
+    
+    // Enhanced search and filter functionality
     const searchInput = document.getElementById('noticeTitleSearch');
     const typeFilter = document.getElementById('noticeTypeFilter');
     const dateFilter = document.getElementById('dateFilter');
@@ -671,7 +1660,122 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Initialize live preview
+    const titleInput = document.getElementById('noticeTitle');
+    const contentInput = document.getElementById('noticeContent');
+    const typeSelect = document.getElementById('noticeType');
+    const targetSelect = document.getElementById('targetGroup');
+    
+    if (titleInput) titleInput.addEventListener('input', updateLivePreview);
+    if (contentInput) contentInput.addEventListener('input', updateLivePreview);
+    if (typeSelect) typeSelect.addEventListener('change', updateLivePreview);
+    if (targetSelect) targetSelect.addEventListener('change', updateLivePreview);
+    
+    // Enhanced search functionality
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function() {
+            performSearch();
+        });
+    }
+    
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            resetSearch();
+        });
+    }
+    
+    // Add loading states to buttons
+    const submitBtn = document.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রক্রিয়াকরণ হচ্ছে...';
+            this.disabled = true;
+        });
+    }
 });
+
+
+
+function performSearch() {
+    const titleSearch = document.getElementById('noticeTitleSearch').value;
+    const typeFilter = document.getElementById('noticeTypeFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
+    
+    // Implement search logic here
+    console.log('Searching for:', { titleSearch, typeFilter, dateFilter });
+    
+    // Show loading state
+    const searchBtn = document.getElementById('searchBtn');
+    searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> অনুসন্ধান হচ্ছে...';
+    searchBtn.disabled = true;
+    
+    // Simulate search delay
+    setTimeout(() => {
+        searchBtn.innerHTML = '<i class="fas fa-search"></i> অনুসন্ধান করুন';
+        searchBtn.disabled = false;
+    }, 1000);
+}
+
+function resetSearch() {
+    document.getElementById('noticeTitleSearch').value = '';
+    document.getElementById('noticeTypeFilter').value = '';
+    document.getElementById('dateFilter').value = '';
+    
+    // Reset table to show all notices
+    console.log('Search reset');
+}
+
+// Enhanced table interactions
+function enhanceTableInteractions() {
+    const tableRows = document.querySelectorAll('.styled-table tbody tr');
+    
+    tableRows.forEach(row => {
+        row.addEventListener('click', function() {
+            // Remove active class from all rows
+            tableRows.forEach(r => r.classList.remove('active-row'));
+            // Add active class to clicked row
+            this.classList.add('active-row');
+        });
+    });
+}
+
+// Initialize table interactions when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    enhanceTableInteractions();
+});
+
+// Simple form validation
+function validateAndSubmitForm(event) {
+    const title = document.getElementById('noticeTitle').value.trim();
+    const content = document.getElementById('noticeContent').value.trim();
+    
+    if (!title) {
+        alert('শিরোনাম প্রয়োজনীয়');
+        document.getElementById('noticeTitle').focus();
+        return false;
+    }
+    
+    if (!content) {
+        alert('বিস্তারিত প্রয়োজনীয়');
+        document.getElementById('noticeContent').focus();
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রক্রিয়াকরণ হচ্ছে...';
+        submitBtn.disabled = true;
+    }
+    
+    return true;
+}
+
+
 </script>
 
 <jsp:include page="/WEB-INF/includes/admin_footer.jsp" />

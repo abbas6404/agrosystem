@@ -177,6 +177,8 @@ public class AdminNoticesServlet extends HttpServlet {
     private void handleAddNotice(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+
+        
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String type = request.getParameter("noticeType");

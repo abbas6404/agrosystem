@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-@WebServlet("/admin/farmers")
+@WebServlet("/admin/farmers/*")
 public class AdminFarmersServlet extends HttpServlet {
     
     private static final Logger logger = Logger.getLogger(AdminFarmersServlet.class.getName());
@@ -54,6 +54,23 @@ public class AdminFarmersServlet extends HttpServlet {
             if (!"ADMIN".equals(user.getUserType())) {
                 logger.warning("User is not admin, redirecting to login");
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
+                return;
+            }
+            
+            // Check if this is an add farmer request
+            String pathInfo = request.getPathInfo();
+            String requestURI = request.getRequestURI();
+            String contextPath = request.getContextPath();
+            String servletPath = request.getServletPath();
+            
+            logger.info("Path Info: " + pathInfo);
+            logger.info("Request URI: " + requestURI);
+            logger.info("Context Path: " + contextPath);
+            logger.info("Servlet Path: " + servletPath);
+            
+            if (pathInfo != null && pathInfo.equals("/add")) {
+                logger.info("Add farmer request detected, forwarding to add_farmer.jsp");
+                request.getRequestDispatcher("/add_farmer.jsp").forward(request, response);
                 return;
             }
             
@@ -163,6 +180,123 @@ public class AdminFarmersServlet extends HttpServlet {
         } catch (Exception e) {
             logger.log(Level.WARNING, "Error calculating active farmers", e);
             return 0;
+        }
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        logger.info("AdminFarmersServlet doPost called");
+        
+        try {
+            // Check session and authentication
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("loggedInUser") == null) {
+                logger.warning("No valid session found, redirecting to login");
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                return;
+            }
+            
+            // Check if user is admin
+            User user = (User) session.getAttribute("loggedInUser");
+            if (!"ADMIN".equals(user.getUserType())) {
+                logger.warning("User is not admin, redirecting to login");
+                response.sendRedirect(request.getContextPath() + "/admin/farmers?error=Unknown action");
+                return;
+            }
+            
+            String action = request.getParameter("action");
+            logger.info("Action: " + action);
+            
+            if ("add".equals(action)) {
+                handleAddFarmer(request, response);
+            } else {
+                logger.warning("Unknown action: " + action);
+                response.sendRedirect(request.getContextPath() + "/admin/farmers?error=Unknown action");
+            }
+            
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error in AdminFarmersServlet doPost", e);
+            response.sendRedirect(request.getContextPath() + "/admin/farmers?error=Error processing request: " + e.getMessage());
+        }
+    }
+    
+    private void handleAddFarmer(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        try {
+            // Get form parameters
+            String farmerName = request.getParameter("farmerName");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String password = request.getParameter("password");
+            String location = request.getParameter("location");
+            String landSizeStr = request.getParameter("landSize");
+            String soilType = request.getParameter("soilType");
+            String soilConditions = request.getParameter("soilConditions");
+            String climate = request.getParameter("climate");
+            String irrigation = request.getParameter("irrigation");
+            
+            // Validate required fields
+            if (farmerName == null || farmerName.trim().isEmpty() ||
+                phoneNumber == null || phoneNumber.trim().isEmpty() ||
+                password == null || password.trim().isEmpty() ||
+                location == null || location.trim().isEmpty() ||
+                landSizeStr == null || landSizeStr.trim().isEmpty()) {
+                
+                logger.warning("Required fields missing for farmer registration");
+                response.sendRedirect(request.getContextPath() + "/admin/farmers/add?error=সব প্রয়োজনীয় ক্ষেত্র পূরণ করুন");
+                return;
+            }
+            
+            // Parse land size
+            double landSize;
+            try {
+                landSize = Double.parseDouble(landSizeStr);
+                if (landSize <= 0) {
+                    throw new NumberFormatException("Land size must be positive");
+                }
+            } catch (NumberFormatException e) {
+                logger.warning("Invalid land size: " + landSizeStr);
+                response.sendRedirect(request.getContextPath() + "/admin/farmers/add?error=সঠিক জমির আকার লিখুন");
+                return;
+            }
+            
+            // Create Farmer object
+            Farmer farmer = new Farmer();
+            farmer.setName(farmerName.trim());
+            farmer.setPhoneNumber(phoneNumber.trim());
+            farmer.setPassword(password);
+            farmer.setLocation(location.trim());
+            farmer.setLandSizeAcres(landSize);
+            
+            // Set optional fields
+            if (soilType != null && !soilType.trim().isEmpty()) {
+                farmer.setSoilConditions(soilType.trim());
+            }
+            if (soilConditions != null && !soilConditions.trim().isEmpty()) {
+                String currentSoil = farmer.getSoilConditions();
+                if (currentSoil != null && !currentSoil.isEmpty()) {
+                    farmer.setSoilConditions(currentSoil + " | " + soilConditions.trim());
+                } else {
+                    farmer.setSoilConditions(soilConditions.trim());
+                }
+            }
+            
+            // Register the farmer
+            Farmer registeredFarmer = userDAO.registerFarmer(farmer);
+            
+            if (registeredFarmer != null) {
+                logger.info("Farmer registered successfully: " + registeredFarmer.getId());
+                response.sendRedirect(request.getContextPath() + "/admin/farmers?success=কৃষক সফলভাবে যোগ করা হয়েছে");
+            } else {
+                logger.warning("Failed to register farmer");
+                response.sendRedirect(request.getContextPath() + "/admin/farmers/add?error=কৃষক যোগ করতে সমস্যা হয়েছে");
+            }
+            
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error adding farmer", e);
+            response.sendRedirect(request.getContextPath() + "/admin/farmers/add?error=কৃষক যোগ করতে সমস্যা হয়েছে: " + e.getMessage());
         }
     }
 }

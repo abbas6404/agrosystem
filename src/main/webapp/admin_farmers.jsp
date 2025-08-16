@@ -18,15 +18,7 @@
     text-align: center;
 }
 
-.debug-info {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 20px;
-    border-radius: 5px;
-    font-family: monospace;
-    font-size: 12px;
-}
+
 
 .empty-state {
     text-align: center;
@@ -356,18 +348,7 @@
     </div>
 </c:if>
 
-<!-- Debug Information (remove in production) -->
-<div class="debug-info" style="background-color: #f0f0f0; border: 1px solid #ccc; padding: 10px; margin: 20px; border-radius: 5px; font-family: monospace; font-size: 12px;">
-    <strong>Debug Info:</strong><br>
-    allFarmers: ${allFarmers != null ? allFarmers.size() : 'null'} items<br>
-    farmerCount: ${farmerCount}<br>
-    monthlyFarmerCount: ${monthlyFarmerCount}<br>
-    activeLocations: ${activeLocations}<br>
-    activeFarmers: ${activeFarmers}<br>
-    locations: ${locations != null ? locations.size() : 'null'} items<br>
-    currentPage: ${currentPage}<br>
-    totalPages: ${totalPages}
-</div>
+
 
 <!-- Page Actions -->
 <div class="page-actions">

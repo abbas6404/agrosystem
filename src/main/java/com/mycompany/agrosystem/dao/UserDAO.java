@@ -102,7 +102,7 @@ public class UserDAO {
     }
 
     private Farmer getFarmerDetails(int userId, Connection conn) throws SQLException {
-        String sql = "SELECT u.id, u.name, u.phone_number, u.created_at, f.location, f.land_size_acres, f.soil_conditions " +
+        String sql = "SELECT u.id, u.name, u.phone_number, u.password, u.created_at, f.location, f.land_size_acres, f.soil_conditions " +
                      "FROM users u JOIN farmers f ON u.id = f.user_id WHERE u.id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -112,6 +112,7 @@ public class UserDAO {
                 farmer.setId(rs.getInt("id"));
                 farmer.setName(rs.getString("name"));
                 farmer.setPhoneNumber(rs.getString("phone_number"));
+                farmer.setPassword(rs.getString("password")); // Add password field
                 farmer.setLocation(rs.getString("location"));
                 farmer.setLandSizeAcres(rs.getDouble("land_size_acres"));
                 farmer.setSoilConditions(rs.getString("soil_conditions"));
@@ -129,7 +130,7 @@ public class UserDAO {
     }
 
     private Admin getAdminDetails(int userId, Connection conn) throws SQLException {
-        String sql = "SELECT u.id, u.name, u.phone_number, u.created_at, a.email, a.experience_years " +
+        String sql = "SELECT u.id, u.name, u.phone_number, u.password, u.created_at, a.email, a.experience_years " +
                      "FROM users u JOIN admins a ON u.id = a.user_id WHERE u.id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -139,6 +140,7 @@ public class UserDAO {
                 admin.setId(rs.getInt("id"));
                 admin.setName(rs.getString("name"));
                 admin.setPhoneNumber(rs.getString("phone_number"));
+                admin.setPassword(rs.getString("password")); // Add password field
                 admin.setEmail(rs.getString("email"));
                 admin.setExperienceYears(rs.getInt("experience_years"));
                 
@@ -293,6 +295,31 @@ public class UserDAO {
             return false;
         } finally {
             if (conn != null) { try { conn.setAutoCommit(true); conn.close(); } catch (SQLException e) { e.printStackTrace(); } }
+        }
+    }
+    
+    /**
+     * Updates a user's password.
+     * @param userId The ID of the user whose password to update.
+     * @param newPassword The new hashed password.
+     * @return true if update was successful, false otherwise.
+     */
+    public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            DBConnection.closeConnection(conn);
         }
     }
     
@@ -673,5 +700,34 @@ public class UserDAO {
         List<Map<String, Object>> result = new ArrayList<>();
         // For now, return empty list
         return result;
+    }
+
+    /**
+     * Gets user details by ID for refreshing session data.
+     * @param userId The ID of the user.
+     * @return A User object (either Farmer or Admin) if found, otherwise null.
+     */
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String userType = rs.getString("user_type");
+                if ("FARMER".equals(userType)) {
+                    return getFarmerDetails(userId, conn);
+                } else if ("ADMIN".equals(userType)) {
+                    return getAdminDetails(userId, conn);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return null;
     }
 }

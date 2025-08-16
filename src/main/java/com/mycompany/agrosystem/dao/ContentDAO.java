@@ -248,11 +248,15 @@ public class ContentDAO {
     }
 
     public boolean addNotice(String title, String content, String type, String targetGroup, int expiry, int adminId) {
-        // Try the new schema first
         String sql = "INSERT INTO notices (title, content, type, target_group, expiry, created_by_admin_id, created_at) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
+            if (conn == null) {
+                System.err.println("Database connection failed");
+                return false;
+            }
+            
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, title);
             ps.setString(2, content);
@@ -260,20 +264,14 @@ public class ContentDAO {
             ps.setString(4, targetGroup != null ? targetGroup : "all");
             ps.setInt(5, expiry);
             ps.setInt(6, adminId);
-            return ps.executeUpdate() > 0;
+            
+            int result = ps.executeUpdate();
+            System.out.println("Notice added successfully. Rows affected: " + result);
+            return result > 0;
         } catch (SQLException e) { 
-            // If new columns don't exist, try the old schema
-            try {
-                sql = "INSERT INTO notices (title, content, created_by_admin_id, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setString(1, title);
-                ps.setString(2, content);
-                ps.setInt(3, adminId);
-                return ps.executeUpdate() > 0;
-            } catch (SQLException e2) {
-                e2.printStackTrace();
-                return false;
-            }
+            System.err.println("Error adding notice: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         } finally {
             DBConnection.closeConnection(conn);
         }

@@ -68,6 +68,14 @@
             <i class="fas fa-chart-bar"></i>
             <span>রিপোর্ট দেখুন</span>
         </a>
+        <a href="${pageContext.request.contextPath}/admin_change_password.jsp" class="quick-action-btn">
+            <i class="fas fa-key"></i>
+            <span>পাসওয়ার্ড পরিবর্তন করুন</span>
+        </a>
+        <a href="${pageContext.request.contextPath}/logout" class="quick-action-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>লগ আউট করুন</span>
+        </a>
     </div>
 </div>
 
